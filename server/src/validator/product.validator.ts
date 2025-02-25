@@ -3,11 +3,11 @@ import { body } from "express-validator";
 export class ProductValidator {
     static createProduct() {
         return [
-            body("name").isString().notEmpty().withMessage("Name is required"),
-            body("price").isNumeric().notEmpty().withMessage("Price is required"),
-            body("quantity").isNumeric().notEmpty().withMessage("Quantity is required"),
-            body("description").isString().notEmpty().withMessage("Description is required"),
-        ]
+            body("name").notEmpty().withMessage("Name is required"),
+            body("price").notEmpty().withMessage("Price is required").isNumeric().withMessage("price value should be numeric"),
+            body("quantity").notEmpty().withMessage("Quantity is required").isNumeric().withMessage("price value should be numeric"),
+            body("description").optional(),
+        ];
     }
 
     static updateProduct() {
@@ -16,6 +16,6 @@ export class ProductValidator {
             body("price").isNumeric().optional(),
             body("quantity").isNumeric().optional(),
             body("description").isString().optional(),
-        ]
+        ];
     }
 }

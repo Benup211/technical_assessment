@@ -2,10 +2,12 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import cors from "cors";
+import morgan from "morgan";
 import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./config";
 import { Product } from "./model";
+import { ProductRoutes } from "./route";
 
 dotenv.config();
 
@@ -40,9 +42,11 @@ export class MainServer {
             origin: [process.env.ORIGIN_URL as string],
             credentials: true,
         }));
+        this.app.use(morgan("dev"));
     }
 
     setRoutes() {
+        this.app.use("/api/product", ProductRoutes);
     }
 
     handle404Error() {
