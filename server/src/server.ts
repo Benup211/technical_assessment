@@ -8,6 +8,9 @@ import dotenv from "dotenv";
 import { connectDB } from "./config";
 import { Product } from "./model";
 import { ProductRoutes } from "./route";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+import { productSwaggerDocs } from "./route/swaggerdocs";
 
 dotenv.config();
 
@@ -18,16 +21,17 @@ export class MainServer {
         this.setConfiguration();
         this.dbConnection();
         this.setRoutes();
+        this.setupSwagger();
         this.handle404Error();
         this.handleClientError();
     }
 
     async dbConnection() {
         connectDB().then(async () => {
-            try{
+            try {
                 await Product.init();
                 console.log("Product Schema initialized");
-            }catch(e){
+            } catch (e) {
                 console.log("Schema initialization failed");
             }
         });
@@ -46,7 +50,32 @@ export class MainServer {
     }
 
     setRoutes() {
-        this.app.use("/api/product", ProductRoutes);
+        this.app.use("/api/products", ProductRoutes);
+    }
+
+    setupSwagger() {
+        const options = {
+            definition: {
+                openapi: "3.0.0",
+                info: {
+                    title: "API Documentation",
+                    version: "1.0.0",
+                    description: "This is the API documentation for the technical assessments of backend skill.",
+                },
+                servers: [
+                    {
+                        url: "http://localhost:3001",
+                    },
+                ],
+                paths: {
+                    ...productSwaggerDocs,
+                }
+            },
+            apis: ["./src/route/*.ts"],
+        };
+
+        const swaggerSpec = swaggerJsdoc(options);
+        this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     }
 
     handle404Error() {
