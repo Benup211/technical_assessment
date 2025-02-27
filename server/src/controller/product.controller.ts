@@ -26,6 +26,9 @@ export class ProductController {
         try {
             const { id } = req.params;
             const product = await ProductRepository.getProductById(id);
+            if (!product) {
+                return ResponseView.CreateErrorResponse("Product not found", 404);
+            }
             return ResponseView.CreateSuccessResponse(product, 200, res);
         } catch (e) {
             next(e);
@@ -37,6 +40,9 @@ export class ProductController {
             const { id } = req.params;
             const { name, price, quantity, description } = req.body;
             const product = await ProductRepository.updateProduct(id, name, price, quantity, description);
+            if (!product) {
+                return ResponseView.CreateErrorResponse("Product not found", 404);
+            }
             return ResponseView.CreateSuccessResponse(product, 200, res);
         } catch (e) {
             next(e);
@@ -46,7 +52,10 @@ export class ProductController {
     static async deleteProductById(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
-            await ProductRepository.deleleProductById(id);
+            const product = await ProductRepository.deleleProductById(id);
+            if (!product) {
+                return ResponseView.CreateErrorResponse("Product not found", 404);
+            }
             return ResponseView.CreateSuccessResponse({}, 204, res);
         } catch (e) {
             next(e);

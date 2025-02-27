@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import { Product } from "../model";
 
 export class ProductRepository {
@@ -19,6 +20,7 @@ export class ProductRepository {
     }
 
     static async getProductById(id: string) {
+        if (!isValidObjectId(id)) return null;
         try {
             return Product.findById(id);
         } catch {
@@ -27,6 +29,7 @@ export class ProductRepository {
     }
 
     static async updateProduct(id: string, name?: string, price?: number, quantity?: number, description?: string) {
+        if (!isValidObjectId(id)) return null;
         try {
             return Product.findByIdAndUpdate(id, { name, price, quantity, description, updated_at: Date.now() }, { new: true });
         } catch {
@@ -35,6 +38,7 @@ export class ProductRepository {
     }
 
     static async deleleProductById(id: string) {
+        if (!isValidObjectId(id)) return null;
         try {
             return Product.findByIdAndDelete(id);
         } catch {
