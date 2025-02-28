@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import { X } from "lucide-react"
+import { DialogDescription } from "@radix-ui/react-dialog"
 
 interface WalletDialogProps {
     open: boolean
@@ -11,8 +11,9 @@ interface WalletDialogProps {
 export function WalletDialog({ open, onOpenChange }: WalletDialogProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-md bg-[#1C1C1C] border-gray-800">
+            <DialogContent className="sm:max-w-md bg-[#0e0d0d] border-gray-800">
                 <DialogHeader className="flex flex-row items-center justify-between">
+                    <DialogDescription className="hidden">Hardware Wallet Connection</DialogDescription>
                     <DialogTitle className="text-xl font-semibold text-white">Connect Wallet</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
@@ -20,45 +21,23 @@ export function WalletDialog({ open, onOpenChange }: WalletDialogProps) {
                     <div className="space-y-2">
                         <Button
                             variant="outline"
-                            className="w-full bg-[#2C2C2C] border-gray-700 hover:bg-[#3C3C3C] text-white justify-between h-12"
+                            className="w-full bg-[#2C2C2C] border-gray-700 hover:bg-[#3C3C3C] text-white hover:text-white justify-between h-12"
                         >
                             Connect to Ledger
-                            <Image src="/placeholder.svg?height=24&width=24" alt="Metamask" width={24} height={24} className="ml-2" />
+                            <Image src="/ledger.svg?height=24&width=24" alt="ledger logo" width={24} height={24} className="ml-2" />
                         </Button>
                         <Button
                             variant="outline"
-                            className="w-full bg-[#2C2C2C] border-gray-700 hover:bg-[#3C3C3C] text-white justify-between h-12"
+                            className="w-full bg-[#2C2C2C] border-gray-700 hover:bg-[#3C3C3C] text-white hover:text-white justify-between h-12"
                         >
                             Connect to Trezor
                             <Image
-                                src="/placeholder.svg?height=24&width=24"
-                                alt="Subwallet"
+                                src="/trezor.svg?height=24&width=24"
+                                alt="trezor logo"
                                 width={24}
                                 height={24}
                                 className="ml-2"
                             />
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="w-full bg-[#2C2C2C] border-gray-700 hover:bg-[#3C3C3C] text-white justify-between h-12"
-                        >
-                            <span className="flex items-center">
-                                <svg
-                                    className="mr-2 h-4 w-4"
-                                    fill="none"
-                                    height="24"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    viewBox="0 0 24 24"
-                                    width="24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path d="M12 12H19M19 12L16 15M19 12L16 9" />
-                                </svg>
-                                Sign in with Local Wallet Account
-                            </span>
                         </Button>
                     </div>
                 </div>

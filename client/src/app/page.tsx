@@ -2,28 +2,23 @@
 
 import { useState } from "react"
 import {
-  Flame,
-  Gem,
-  Coins,
-  PiggyBank,
-  Settings,
   User,
   Tag,
   CoinsIcon,
   DollarSign,
   Calendar,
   ChevronLeft,
-  ChevronRight,
-  Menu,
-  X,
+  ChevronRight
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { WalletDialog } from "@/components/wallet/wallet-dialog"
+import { Navbar } from "@/components/home/Navbar"
+import Image from "next/image"
 
-// Mock transaction data
+
 const transactions = [
   {
     id: 1,
@@ -123,27 +118,55 @@ const transactions = [
   },
 ]
 
+const cardDatas = [
+  {
+    title: "Get FORGE",
+    description: "Acquire FORGE tokens and unlock the power of decentralized finance.",
+    buttonText: "Get FORGE",
+    imageSrc: "fire.svg",
+    imageAlt: "forge fire",
+  },
+  {
+    title: "Stake",
+    description: "Stake your FORGE tokens to earn IGNIS rewards with competitive APYs.",
+    buttonText: "Start Staking",
+    imageSrc: "iron.svg",
+    imageAlt: "forge iron",
+  },
+  {
+    title: "Borrow & Lend",
+    description: "Access decentralized borrowing and lending with your FORGE tokens.",
+    buttonText: "Borrow Now",
+    imageSrc: "crysto.svg",
+    imageAlt: "forge crysto",
+  },
+  {
+    title: "Save",
+    description: "Save your FORGE tokens securely and earn stable rewards.",
+    buttonText: "Start Saving",
+    imageSrc: "shild.svg",
+    imageAlt: "forge shield",
+  },
+]
+
 export default function Home() {
   const [filter, setFilter] = useState("All")
   const [currentPage, setCurrentPage] = useState(1)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [walletOpen, setWalletOpen] = useState(false)
-  const itemsPerPage = 5
+  const itemsPerPage = 10
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter)
-    setCurrentPage(1) // Reset page when filter changes
+    setCurrentPage(1)
   }
 
   const filteredTransactions = filter === "All" ? transactions : transactions.filter((tx) => tx.type === filter)
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage)
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentTransactions = filteredTransactions.slice(indexOfFirstItem, indexOfLastItem)
 
-  // Pagination controls
   const goToNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
   }
@@ -160,82 +183,43 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white">
       <WalletDialog open={walletOpen} onOpenChange={setWalletOpen} />
       {/* Navbar */}
-      <header className="border-b border-gray-800 bg-black">
-        <div className="container mx-auto flex items-center justify-between p-4">
-          <div className="flex items-center space-x-1">
-            <div className="mr-4">
-              <Gem className="h-6 w-6 text-teal-400" />
-            </div>
-            <Button variant="default" className="bg-gray-700 hover:bg-gray-600 hidden sm:inline-flex">
-              Dashboard
-            </Button>
-            <Button variant="ghost" className="hidden sm:inline-flex">
-              Staking
-            </Button>
-            <Button variant="ghost" className="hidden sm:inline-flex">
-              Borrow
-            </Button>
-            <Button variant="ghost" className="hidden sm:inline-flex">
-              Save
-            </Button>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Settings className="h-5 w-5 text-gray-400 hidden sm:block" />
-            <Button
-              variant="outline"
-              className="border-teal-500 text-teal-500 hover:bg-teal-500/10 hidden sm:inline-flex"
-              onClick={() => setWalletOpen(true)}
-            >
-              Connect to wallet
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="sm:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </Button>
-          </div>
+      <Navbar setWalletOpen={setWalletOpen} />
+
+      {/* Welcome Section */}
+      <section className="container mx-auto py-6 text-center">
+        <h1 className="mb-4 text-4xl font-bold text-teal-400">Welcome to DeFi Forge</h1>
+        <p className="mx-auto mb-12 max-w-3xl text-gray-400">
+          Discover the power of decentralized finance. Get FORGE, stake tokens, borrow, lend, and save—all in one secure
+          platform.
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+          {cardDatas.map((card, index) => (
+            <Card key={index} className="bg-white text-black max-w-[325px] md:max-w-[280px] min-h-[280px]">
+              <CardHeader className="text-center">
+                <div className="mx-auto mb-2">
+                  <Image src={card.imageSrc} width={60} height={60} alt={card.imageAlt} />
+                </div>
+                <CardTitle>{card.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardDescription className="text-gray-600">{card.description}</CardDescription>
+              </CardContent>
+              <CardFooter className="justify-center">
+                <Button className="bg-teal-600 hover:bg-teal-700">{card.buttonText}</Button>
+              </CardFooter>
+            </Card>
+          ))}
         </div>
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="sm:hidden bg-gray-900 py-2">
-            <nav className="container mx-auto flex flex-col space-y-2">
-              <Button variant="default" className="justify-start bg-gray-700 hover:bg-gray-600">
-                Dashboard
-              </Button>
-              <Button variant="ghost" className="justify-start">
-                Staking
-              </Button>
-              <Button variant="ghost" className="justify-start">
-                Borrow
-              </Button>
-              <Button variant="ghost" className="justify-start">
-                Save
-              </Button>
-              <Button
-                variant="outline"
-                className="border-teal-500 text-teal-500 hover:bg-teal-500/10 justify-start"
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  setWalletOpen(true)
-                }}
-              >
-                Connect to wallet
-              </Button>
-            </nav>
-          </div>
-        )}
-      </header>
+      </section>
 
       {/* Recent Transactions Section */}
       <section className="container mx-auto py-4 sm:py-6">
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-6 sm:mb-8 p-4 sm:p-0">
           <div className="mb-4 sm:mb-6 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
             <h2 className="text-xl sm:text-2xl font-bold text-teal-400">Recent Transactions</h2>
 
-            <div className="overflow-x-auto -mx-4 px-4 sm:overflow-visible sm:px-0">
+            <div className="overflow-x-auto sm:overflow-visible sm:px-0">
               <div className="flex space-x-2 min-w-max sm:min-w-0">
                 <Button
                   variant={filter === "All" ? "default" : "outline"}
@@ -249,7 +233,7 @@ export default function Home() {
                   variant={filter === "Stake" ? "default" : "outline"}
                   size="sm"
                   onClick={() => handleFilterChange("Stake")}
-                  className={filter === "Stake" ? "bg-green-600 hover:bg-green-700" : ""}
+                  className={filter === "Stake" ? "bg-green-600 hover:bg-green-700" : "hover:bg-green-700"}
                 >
                   Stake
                 </Button>
@@ -257,7 +241,7 @@ export default function Home() {
                   variant={filter === "Borrow" ? "default" : "outline"}
                   size="sm"
                   onClick={() => handleFilterChange("Borrow")}
-                  className={filter === "Borrow" ? "bg-blue-600 hover:bg-blue-700" : ""}
+                  className={filter === "Borrow" ? "bg-blue-600 hover:bg-blue-700" : "hover:bg-blue-700"}
                 >
                   Borrow
                 </Button>
@@ -265,7 +249,7 @@ export default function Home() {
                   variant={filter === "Lend" ? "default" : "outline"}
                   size="sm"
                   onClick={() => handleFilterChange("Lend")}
-                  className={filter === "Lend" ? "bg-purple-600 hover:bg-purple-700" : ""}
+                  className={filter === "Lend" ? "bg-purple-600 hover:bg-purple-700" : "hover:bg-purple-700"}
                 >
                   Lend
                 </Button>
@@ -273,7 +257,7 @@ export default function Home() {
             </div>
           </div>
 
-          <Card className="border-gray-800 bg-[#0D1117]">
+          <Card className="border-gray-800 bg-[#0D1117] p-2">
             <CardContent className="p-0">
               <div className="block sm:hidden">
                 {/* Mobile View */}
@@ -354,9 +338,8 @@ export default function Home() {
                     {currentTransactions.map((tx, index) => (
                       <TableRow
                         key={tx.id}
-                        className={`border-gray-800 transition-colors text-white ${
-                          index % 2 === 0 ? "bg-[#0D1117]" : "bg-[#1C2128]"
-                        } hover:bg-gray-800`}
+                        className={`border-gray-800 transition-colors text-white ${index % 2 === 0 ? "bg-[#0D1117]" : "bg-[#1C2128]"
+                          } hover:bg-gray-800`}
                       >
                         <TableCell className="font-medium text-white">{tx.username}</TableCell>
                         <TableCell>
@@ -423,89 +406,6 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* Welcome Section */}
-      <section className="container mx-auto py-6 text-center">
-        <h1 className="mb-4 text-4xl font-bold text-teal-400">Welcome to DeFi Forge</h1>
-        <p className="mx-auto mb-12 max-w-3xl text-gray-400">
-          Discover the power of decentralized finance. Get FORGE, stake tokens, borrow, lend, and save—all in one secure
-          platform.
-        </p>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {/* Get FORGE Card */}
-          <Card className="bg-white text-black">
-            <CardHeader className="text-center">
-              <div className="mx-auto mb-2">
-                <Flame className="h-10 w-10 text-red-500" />
-              </div>
-              <CardTitle>Get FORGE</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <CardDescription className="text-gray-600">
-                Acquire FORGE tokens and unlock the power of decentralized finance.
-              </CardDescription>
-            </CardContent>
-            <CardFooter className="justify-center">
-              <Button className="bg-teal-600 hover:bg-teal-700">Get FORGE</Button>
-            </CardFooter>
-          </Card>
-
-          {/* Stake Card */}
-          <Card className="bg-white text-black">
-            <CardHeader className="text-center">
-              <div className="mx-auto mb-2">
-                <Coins className="h-10 w-10 text-gray-500" />
-              </div>
-              <CardTitle>Stake</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <CardDescription className="text-gray-600">
-                Stake your FORGE tokens to earn IGNIS rewards with competitive APYs.
-              </CardDescription>
-            </CardContent>
-            <CardFooter className="justify-center">
-              <Button className="bg-teal-600 hover:bg-teal-700">Start Staking</Button>
-            </CardFooter>
-          </Card>
-
-          {/* Borrow & Lend Card */}
-          <Card className="bg-white text-black">
-            <CardHeader className="text-center">
-              <div className="mx-auto mb-2">
-                <Gem className="h-10 w-10 text-black" />
-              </div>
-              <CardTitle>Borrow & Lend</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <CardDescription className="text-gray-600">
-                Access decentralized borrowing and lending with your FORGE tokens.
-              </CardDescription>
-            </CardContent>
-            <CardFooter className="justify-center">
-              <Button className="bg-teal-600 hover:bg-teal-700">Borrow Now</Button>
-            </CardFooter>
-          </Card>
-
-          {/* Save Card */}
-          <Card className="bg-white text-black">
-            <CardHeader className="text-center">
-              <div className="mx-auto mb-2">
-                <PiggyBank className="h-10 w-10 text-yellow-300" />
-              </div>
-              <CardTitle>Save</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <CardDescription className="text-gray-600">
-                Save your FORGE tokens securely and earn stable rewards.
-              </CardDescription>
-            </CardContent>
-            <CardFooter className="justify-center">
-              <Button className="bg-teal-600 hover:bg-teal-700">Start Saving</Button>
-            </CardFooter>
           </Card>
         </div>
       </section>
